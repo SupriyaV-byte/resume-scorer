@@ -1,0 +1,31 @@
+rank,file,total_score,similarity_score,skill_score,matched_skills
+1,resumes/resume_24.pdf,44.51,17.01,27.5,"python, flask, rest api, sql, postgresql, git, aws, docker, ci/cd, agile, unit testing"
+2,resumes/resume_01.pdf,40.76,15.76,25.0,"python, django, rest api, sql, postgresql, git, aws, docker, agile, unit testing"
+3,resumes/resume_30.pdf,40.09,15.09,25.0,"python, django, sql, postgresql, git, aws, docker, ci/cd, agile, unit testing"
+4,resumes/resume_12.pdf,38.68,13.68,25.0,"python, django, sql, postgresql, git, aws, docker, ci/cd, agile, unit testing"
+5,resumes/resume_16.pdf,38.67,11.17,27.5,"python, django, rest api, sql, postgresql, git, aws, docker, ci/cd, agile, unit testing"
+6,resumes/resume_14.pdf,36.73,14.23,22.5,"python, flask, rest api, sql, postgresql, git, aws, docker, unit testing"
+7,resumes/resume_26.pdf,36.38,11.38,25.0,"python, django, sql, postgresql, git, aws, docker, ci/cd, agile, unit testing"
+8,resumes/resume_19.pdf,36.34,11.34,25.0,"python, django, flask, sql, postgresql, git, aws, docker, ci/cd, agile"
+9,resumes/resume_22.pdf,35.12,12.62,22.5,"python, django, rest api, sql, postgresql, git, aws, docker, unit testing"
+10,resumes/resume_08.pdf,35.03,12.53,22.5,"python, django, sql, postgresql, git, aws, docker, agile, unit testing"
+11,resumes/resume_20.pdf,31.96,11.96,20.0,"python, django, rest api, sql, git, aws, docker, agile"
+12,resumes/resume_03.pdf,29.03,9.03,20.0,"django, flask, sql, postgresql, git, aws, ci/cd, agile"
+13,resumes/resume_10.pdf,28.87,11.37,17.5,"flask, rest api, sql, git, aws, agile, unit testing"
+14,resumes/resume_21.pdf,27.04,9.54,17.5,"python, django, flask, git, aws, docker, ci/cd"
+15,resumes/resume_05.pdf,25.3,7.8,17.5,"python, django, sql, postgresql, git, docker, agile"
+16,resumes/resume_07.pdf,24.91,7.41,17.5,"python, django, flask, git, aws, docker, ci/cd"
+17,resumes/resume_18.pdf,24.62,9.62,15.0,"python, flask, sql, git, aws, docker"
+18,resumes/resume_29.pdf,23.03,5.53,17.5,"python, django, flask, aws, docker, ci/cd, agile"
+19,resumes/resume_28.pdf,19.75,4.75,15.0,"python, flask, sql, git, aws, docker"
+20,resumes/resume_15.pdf,18.72,3.72,15.0,"python, django, flask, sql, aws, docker"
+21,resumes/resume_09.pdf,16.56,4.06,12.5,"python, django, flask, sql, aws"
+22,resumes/resume_06.pdf,16.43,3.93,12.5,"python, flask, sql, aws, docker"
+23,resumes/resume_11.pdf,11.78,4.28,7.5,"python, sql, aws"
+24,resumes/resume_13.pdf,11.26,3.76,7.5,"python, django, aws"
+25,resumes/resume_27.pdf,11.12,3.62,7.5,"python, django, aws"
+26,resumes/resume_04.pdf,10.75,3.25,7.5,"python, sql, aws"
+27,resumes/resume_23.pdf,6.96,4.46,2.5,python
+28,resumes/resume_25.pdf,5.7,3.2,2.5,python
+29,resumes/resume_02.pdf,5.41,2.91,2.5,python
+30,resumes/resume_17.pdf,0.94,0.94,0.0,
