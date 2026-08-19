@@ -1,0 +1,143 @@
+!pip install scikit-learn PyPDF2 python-docx -q
+from google.colab import files
+import zipfile, os
+
+print("Please select sample_resumes_30.zip in the dialog below:")
+uploaded = files.upload()
+
+zip_filename = list(uploaded.keys())[0]
+print("Uploaded file:", zip_filename)
+
+extract_dir = "resumes"
+os.makedirs(extract_dir, exist_ok=True)
+
+with zipfile.ZipFile(zip_filename, 'r') as z:
+    z.extractall(extract_dir)
+
+resume_filenames = [
+    os.path.join(extract_dir, f) for f in os.listdir(extract_dir)
+    if f.lower().endswith((".pdf", ".docx", ".txt"))
+]
+print(f"{len(resume_filenames)} resume files extracted:", resume_filenames)
+import csv
+import PyPDF2
+import docx
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# ---------------------------------------------------------------------------
+# 1. JOB DESCRIPTION — edit this to match your role
+# ---------------------------------------------------------------------------
+JOB_DESCRIPTION = """
+We are looking for a Python Backend Developer with strong experience in
+Django or Flask, REST API design, SQL/PostgreSQL, Git version control,
+and cloud deployment on AWS. Familiarity with Docker, CI/CD pipelines,
+unit testing, and Agile/Scrum practices is required. 2-4 years of
+experience preferred. Good communication and problem-solving skills.
+"""
+
+MUST_HAVE_SKILLS = [
+    "python", "django", "flask", "rest api", "sql", "postgresql",
+    "git", "aws", "docker", "ci/cd", "agile", "unit testing"
+]
+
+# ---------------------------------------------------------------------------
+# 2. READ TEXT FROM UPLOADED FILES (pdf / docx / txt)
+# ---------------------------------------------------------------------------
+def extract_text(filepath):
+    if filepath.lower().endswith(".pdf"):
+        text = ""
+        with open(filepath, "rb") as f:
+            reader = PyPDF2.PdfReader(f)
+            for page in reader.pages:
+                text += page.extract_text() or ""
+        return text
+    elif filepath.lower().endswith(".docx"):
+        d = docx.Document(filepath)
+        return "\n".join(p.text for p in d.paragraphs)
+    else:  # .txt or fallback
+        with open(filepath, "r", errors="ignore") as f:
+            return f.read()
+
+resumes = []
+for fname in resume_filenames:
+    text = extract_text(fname)
+    resumes.append(text)
+
+print(f"Extracted text from {len(resumes)} resumes.")
+
+# ---------------------------------------------------------------------------
+# 3. SCORING FUNCTIONS
+# ---------------------------------------------------------------------------
+def skill_score(resume_text: str) -> float:
+    text = resume_text.lower()
+    hits = sum(1 for skill in MUST_HAVE_SKILLS if skill in text)
+    return round((hits / len(MUST_HAVE_SKILLS)) * 30, 2)
+
+def similarity_scores(resume_texts):
+    corpus = [JOB_DESCRIPTION] + resume_texts
+    vectorizer = TfidfVectorizer(stop_words="english")
+    tfidf = vectorizer.fit_transform(corpus)
+    sims = cosine_similarity(tfidf[0:1], tfidf[1:]).flatten()
+    return [round(s * 70, 2) for s in sims]
+
+def score_resumes(filenames, texts):
+    sim_scores = similarity_scores(texts)
+
+    results = []
+    for fname, text, sim in zip(filenames, texts, sim_scores):
+        sk = skill_score(text)
+        total = round(sim + sk, 2)
+        matched = [s for s in MUST_HAVE_SKILLS if s in text.lower()]
+        results.append({
+            "file": fname,
+            "similarity_score": sim,
+            "skill_score": sk,
+            "total_score": total,
+            "matched_skills": ", ".join(matched),
+        })
+
+    results.sort(key=lambda r: r["total_score"], reverse=True)
+    for i, r in enumerate(results, 1):
+        r["rank"] = i
+    return results
+
+# ---------------------------------------------------------------------------
+# 4. RUN + SAVE CSV
+# ---------------------------------------------------------------------------
+ranked = score_resumes(resume_filenames, resumes)
+
+with open("top10_resumes.csv", "w", newline="", encoding="utf-8") as f:
+    writer = csv.DictWriter(f, fieldnames=["rank", "file", "total_score",
+                             "similarity_score", "skill_score", "matched_skills"])
+    writer.writeheader()
+    for r in ranked:
+        writer.writerow(r)
+
+print(f"{'Rank':<6}{'File':<25}{'Score':<8}{'Sim':<7}{'Skill':<7}Matched Skills")
+print("-" * 100)
+for r in ranked[:10]:
+    print(f"{r['rank']:<6}{r['file']:<25}{r['total_score']:<8}{r['similarity_score']:<7}{r['skill_score']:<7}{r['matched_skills']}")
+import csv
+from google.colab import files
+
+# Save only top 10 to a separate file
+with open("top10_only.csv", "w", newline="", encoding="utf-8") as f:
+    writer = csv.DictWriter(f, fieldnames=["rank", "file", "total_score",
+                             "similarity_score", "skill_score", "matched_skills"])
+    writer.writeheader()
+    for r in ranked[:10]:
+        writer.writerow(r)
+
+files.download("top10_only.csv")
+import csv
+from google.colab import files
+
+with open("all_30_resumes_ranked.csv", "w", newline="", encoding="utf-8") as f:
+    writer = csv.DictWriter(f, fieldnames=["rank", "file", "total_score",
+                             "similarity_score", "skill_score", "matched_skills"])
+    writer.writeheader()
+    for r in ranked:
+        writer.writerow(r)
+
+files.download("all_30_resumes_ranked.csv")
